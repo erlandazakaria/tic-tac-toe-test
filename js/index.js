@@ -1,6 +1,8 @@
 let playerA = true;
 let playerB = false;
 
+let eventHandler = {};
+
 let playerARows = [];
 let playerBRows = [];
 
@@ -16,6 +18,7 @@ function deletePreviousBoard() {
   while(rows.length > 0){
     rows[0].parentNode.removeChild(rows[0]);
   }
+  eventHandler = {};
 }
 
 function clearError() {
@@ -38,41 +41,63 @@ function checkHorizontal() {
 function checkWin(player, move) {
   let moveArr = move.split(",").map(mv => parseInt(mv, 10));
   let need = numberOfWin - 1;
-  let winHorizontal = []
+  let winHorizontal = [];
+  let winVertical = [];
+
+  // MOVE THAT WIN THE GAME
   for(let i = 1; i < numberOfWin; i++) {
     let behind = need - i;
     //+
     if(behind === 0) {
       let incHorizontal = [];
+      let incVertical = [];
       for(let j = 1; j < numberOfWin; j++) {
-        incHorizontal.push(`${moveArr[0]},${moveArr[1] + j}`)
+        incHorizontal.push(`${moveArr[0]},${moveArr[1] + j}`);
+        incVertical.push(`${moveArr[0] + j},${moveArr[1]}`);
       }
       winHorizontal.push(incHorizontal)
+      winVertical.push(incVertical)
     } else {
       let incHorizontal = [];
-      // for(let j=moveArr[1] + i; j > moveArr[1]-numberOfWin + i; j--) {
+      let incVertical = [];
       for(let j=moveArr[1] + i; j >= moveArr[1]-behind; j--) {
         if(j !== moveArr[1]) {
           incHorizontal.push(`${moveArr[0]},${j}`)
         }
       }
+      for(let j=moveArr[0] + i; j >= moveArr[0]-behind; j--) {
+        if(j !== moveArr[0]) {
+          incVertical.push(`${j},${moveArr[1]}`)
+        }
+      }
       winHorizontal.push(incHorizontal)
+      winVertical.push(incVertical)
     }
     //-
     if(behind === 0) {
       let incHorizontal = [];
+      let incVertical = [];
       for(let j = -1; j > -numberOfWin; j--) {
-        incHorizontal.push(`${moveArr[0]},${moveArr[1] + j}`)
+        incHorizontal.push(`${moveArr[0]},${moveArr[1] + j}`);
+        incVertical.push(`${moveArr[0] + j},${moveArr[1]}`);
       }
       winHorizontal.push(incHorizontal)
+      winVertical.push(incVertical)
     } else {
       let incHorizontal = [];
+      let incVertical = [];
       for(let j=moveArr[1] - i; j <= moveArr[1] + behind; j++) {
         if(j !== moveArr[1]) {
           incHorizontal.push(`${moveArr[0]},${j}`)
         }
       }
+      for(let j=moveArr[0] - i; j <= moveArr[0] + behind; j++) {
+        if(j !== moveArr[0]) {
+          incVertical.push(`${j},${moveArr[0]}`)
+        }
+      }
       winHorizontal.push(incHorizontal)
+      winVertical.push(incVertical)
     }
   }
   
@@ -87,10 +112,24 @@ function checkWin(player, move) {
       })
       return isTrue === hor.length
     })
-
     if(isWinHorizontal.includes(true)) {
       return true
     }
+
+    // check vertical
+    let isWinVertical = winVertical.map(ver => {
+      let isTrue = 0;
+      ver.forEach(v => {
+        if(playerARows.includes(v)) {
+          isTrue = isTrue + 1
+        }
+      })
+      return isTrue === ver.length
+    })
+    if(isWinVertical.includes(true)) {
+      return true
+    }
+
   } else if(player === "B") {
     // check horizontal 
     let isWinHorizontal = winHorizontal.map(hor => {
@@ -102,8 +141,21 @@ function checkWin(player, move) {
       })
       return isTrue === hor.length
     })
-
     if(isWinHorizontal.includes(true)) {
+      return true
+    }
+
+    // check vertical
+    let isWinVertical = winVertical.map(ver => {
+      let isTrue = 0;
+      ver.forEach(v => {
+        if(playerBRows.includes(v)) {
+          isTrue = isTrue + 1
+        }
+      })
+      return isTrue === ver.length
+    })
+    if(isWinVertical.includes(true)) {
       return true
     }
   }
@@ -147,7 +199,10 @@ function turn(board) {
   checkDraw();
   let isWin = checkWin(player, board);
   if(isWin) {
-    document.getElementById("match-result").innerHTML=`Player ${player} WIN`
+    document.getElementById("match-result").innerHTML=`Player ${player} WIN`;
+    document.querySelectorAll('.board-col').forEach(col => {
+      col.removeEventListener("click", eventHandler[col.id])    
+    });
   }
 }
 
@@ -179,7 +234,8 @@ function onstart() {
       let tempCol=document.createElement("div");
       tempCol.id = `${i+1},${j+1}`
       tempCol.className = "board-col"
-      tempCol.addEventListener("click", () => turn(`${i+1},${j+1}`))
+      eventHandler[tempCol.id] = () => turn(tempCol.id);
+      tempCol.addEventListener("click", eventHandler[tempCol.id])
       document.getElementById(`board-row${i+1}`).append(tempCol)
     }
   }
