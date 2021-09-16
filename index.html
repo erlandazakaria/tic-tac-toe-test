@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Erlanda Tic Tac Toe Test</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <script type="text/javascript" src="./js/index.js"></script>
+</head>
+<body>
+  <div class="flex-row">
+    <div>Number of Board :</div><input style="margin-left: 10px;" id="number-of-board" type="number" value=3 /><div id="number-of-board-err"></div>
+  </div>
+  <div class="flex-row">
+    <div>Row to Win :</div><input style="margin-left: 10px;" id="number-of-win" type="number" value=3 /><div id="number-of-win-err"></div>
+  </div>
+  <button onclick="onstart();">START</button>
+  <div id="match-result"></div>
+  <div id="board-container"></div>
+</body>
+</html>
