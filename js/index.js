@@ -34,72 +34,85 @@ function resetTurn() {
   document.getElementById("match-result").innerHTML = ""
 }
 
-function checkHorizontal() {
-
-}
-
 function checkWin(player, move) {
   let moveArr = move.split(",").map(mv => parseInt(mv, 10));
   let need = numberOfWin - 1;
   let winHorizontal = [];
   let winVertical = [];
+  let winDiagonal = [];
+  let winDiagonalLeft = [];
 
   // MOVE THAT WIN THE GAME
   for(let i = 1; i < numberOfWin; i++) {
     let behind = need - i;
+
     //+
     if(behind === 0) {
       let incHorizontal = [];
       let incVertical = [];
+      let incDiagonal = [];
       for(let j = 1; j < numberOfWin; j++) {
         incHorizontal.push(`${moveArr[0]},${moveArr[1] + j}`);
         incVertical.push(`${moveArr[0] + j},${moveArr[1]}`);
+        incDiagonal.push(`${moveArr[0] + j},${moveArr[1] + j}`);
       }
       winHorizontal.push(incHorizontal)
       winVertical.push(incVertical)
+      winDiagonal.push(incDiagonal)
     } else {
       let incHorizontal = [];
       let incVertical = [];
+      let incDiagonal = [];
       for(let j=moveArr[1] + i; j >= moveArr[1]-behind; j--) {
         if(j !== moveArr[1]) {
           incHorizontal.push(`${moveArr[0]},${j}`)
         }
-      }
-      for(let j=moveArr[0] + i; j >= moveArr[0]-behind; j--) {
         if(j !== moveArr[0]) {
           incVertical.push(`${j},${moveArr[1]}`)
+        }
+        if(j !== moveArr[0] || j !== moveArr[1]) {
+          incDiagonal.push(`${j},${j}`)
         }
       }
       winHorizontal.push(incHorizontal)
       winVertical.push(incVertical)
+      winDiagonal.push(incDiagonal)
     }
     //-
     if(behind === 0) {
       let incHorizontal = [];
       let incVertical = [];
+      let incDiagonal = [];
       for(let j = -1; j > -numberOfWin; j--) {
         incHorizontal.push(`${moveArr[0]},${moveArr[1] + j}`);
         incVertical.push(`${moveArr[0] + j},${moveArr[1]}`);
+        incDiagonal.push(`${moveArr[0] + j},${moveArr[1] + j}`);
       }
       winHorizontal.push(incHorizontal)
       winVertical.push(incVertical)
+      winDiagonal.push(incDiagonal)
     } else {
       let incHorizontal = [];
       let incVertical = [];
+      let incDiagonal = [];
       for(let j=moveArr[1] - i; j <= moveArr[1] + behind; j++) {
         if(j !== moveArr[1]) {
           incHorizontal.push(`${moveArr[0]},${j}`)
         }
-      }
-      for(let j=moveArr[0] - i; j <= moveArr[0] + behind; j++) {
         if(j !== moveArr[0]) {
           incVertical.push(`${j},${moveArr[0]}`)
+        }
+        if(j !== moveArr[0] || j !== moveArr[1]) {
+          incDiagonal.push(`${j},${j}`)
         }
       }
       winHorizontal.push(incHorizontal)
       winVertical.push(incVertical)
+      winDiagonal.push(incDiagonal)
     }
   }
+
+  console.log(winDiagonal)
   
   if(player === "A") {
     // check horizontal 
