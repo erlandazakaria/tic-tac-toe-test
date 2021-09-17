@@ -51,18 +51,22 @@ function checkWin(player, move) {
       let incHorizontal = [];
       let incVertical = [];
       let incDiagonal = [];
+      let incDiagonalLeft = [];
       for(let j = 1; j < numberOfWin; j++) {
         incHorizontal.push(`${moveArr[0]},${moveArr[1] + j}`);
         incVertical.push(`${moveArr[0] + j},${moveArr[1]}`);
         incDiagonal.push(`${moveArr[0] + j},${moveArr[1] + j}`);
+        incDiagonalLeft.push(`${moveArr[0]+(j*-1)},${moveArr[1] + j}`)
       }
       winHorizontal.push(incHorizontal)
       winVertical.push(incVertical)
       winDiagonal.push(incDiagonal)
+      winDiagonalLeft.push(incDiagonalLeft)
     } else {
       let incHorizontal = [];
       let incVertical = [];
       let incDiagonal = [];
+      let incDiagonalLeft = [];
       for(let j=moveArr[1] + i; j >= moveArr[1]-behind; j--) {
         if(j !== moveArr[1]) {
           incHorizontal.push(`${moveArr[0]},${j}`)
@@ -72,29 +76,35 @@ function checkWin(player, move) {
         }
         if(j !== moveArr[0] || j !== moveArr[1]) {
           incDiagonal.push(`${j},${j}`)
+          incDiagonalLeft.push(`${moveArr[0]+moveArr[1]-j},${j}`)
         }
       }
       winHorizontal.push(incHorizontal)
       winVertical.push(incVertical)
       winDiagonal.push(incDiagonal)
+      winDiagonalLeft.push(incDiagonalLeft)
     }
     //-
     if(behind === 0) {
       let incHorizontal = [];
       let incVertical = [];
       let incDiagonal = [];
+      let incDiagonalLeft = [];
       for(let j = -1; j > -numberOfWin; j--) {
         incHorizontal.push(`${moveArr[0]},${moveArr[1] + j}`);
         incVertical.push(`${moveArr[0] + j},${moveArr[1]}`);
         incDiagonal.push(`${moveArr[0] + j},${moveArr[1] + j}`);
+        incDiagonalLeft.push(`${moveArr[0]+(j*-1)},${moveArr[1] + j}`)
       }
       winHorizontal.push(incHorizontal)
       winVertical.push(incVertical)
       winDiagonal.push(incDiagonal)
+      winDiagonalLeft.push(incDiagonalLeft)
     } else {
       let incHorizontal = [];
       let incVertical = [];
       let incDiagonal = [];
+      let incDiagonalLeft = [];
       for(let j=moveArr[1] - i; j <= moveArr[1] + behind; j++) {
         if(j !== moveArr[1]) {
           incHorizontal.push(`${moveArr[0]},${j}`)
@@ -104,15 +114,17 @@ function checkWin(player, move) {
         }
         if(j !== moveArr[0] || j !== moveArr[1]) {
           incDiagonal.push(`${j},${j}`)
+          incDiagonalLeft.push(`${moveArr[0]+moveArr[1]-j},${j}`)
         }
       }
       winHorizontal.push(incHorizontal)
       winVertical.push(incVertical)
       winDiagonal.push(incDiagonal)
+      winDiagonalLeft.push(incDiagonalLeft)
     }
   }
 
-  console.log(winDiagonal)
+  // console.log(winDiagonalLeft)
   
   if(player === "A") {
     // check horizontal 
@@ -143,6 +155,34 @@ function checkWin(player, move) {
       return true
     }
 
+    // check Diagonal Right
+    let isWinDiagonal = winDiagonal.map(dia => {
+      let isTrue = 0;
+      dia.forEach(d => {
+        if(playerARows.includes(d)) {
+          isTrue = isTrue + 1
+        }
+      })
+      return isTrue === dia.length
+    })
+    if(isWinDiagonal.includes(true)) {
+      return true
+    }
+
+    // check Diagonal Left
+    let isWinDiagonalLeft = winDiagonalLeft.map(dia => {
+      let isTrue = 0;
+      dia.forEach(d => {
+        if(playerARows.includes(d)) {
+          isTrue = isTrue + 1
+        }
+      })
+      return isTrue === dia.length
+    })
+    if(isWinDiagonalLeft.includes(true)) {
+      return true
+    }
+
   } else if(player === "B") {
     // check horizontal 
     let isWinHorizontal = winHorizontal.map(hor => {
@@ -169,6 +209,34 @@ function checkWin(player, move) {
       return isTrue === ver.length
     })
     if(isWinVertical.includes(true)) {
+      return true
+    }
+
+    // check Diagonal Right
+    let isWinDiagonal = winDiagonal.map(dia => {
+      let isTrue = 0;
+      dia.forEach(d => {
+        if(playerBRows.includes(d)) {
+          isTrue = isTrue + 1
+        }
+      })
+      return isTrue === dia.length
+    })
+    if(isWinDiagonal.includes(true)) {
+      return true
+    }
+
+    // check Diagonal Left
+    let isWinDiagonalLeft = winDiagonalLeft.map(dia => {
+      let isTrue = 0;
+      dia.forEach(d => {
+        if(playerBRows.includes(d)) {
+          isTrue = isTrue + 1
+        }
+      })
+      return isTrue === dia.length
+    })
+    if(isWinDiagonalLeft.includes(true)) {
       return true
     }
   }
